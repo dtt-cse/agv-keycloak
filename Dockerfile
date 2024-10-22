@@ -2,6 +2,7 @@ FROM quay.io/keycloak/keycloak:18.0.0
 
 # ENV KEYCLOAK_USER=admin
 # ENV KEYCLOAK_PASSWORD=MRP_Project_v1.0
+ENV PATH="/opt/keycloak/bin:${PATH}"
 ENV KEYCLOAK_ADMIN=admin
 ENV KEYCLOAK_ADMIN_PASSWORD=MRP_Project_v1.0
 ENV KC_PROXY=edge
@@ -18,3 +19,5 @@ ENV KC_PROXY=edge
 
 # This instance is configured as standalone, as defined in:
 # /opt/jboss/tools/build-keycloak.sh
+
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start"]
