@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mrp-oidc-deploy
+  labels:
+    name: mrp-oidc-deploy
+    app: mrp-oidc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mrp-oidc-pod
+      app: mrp-oidc
+  template:
+    metadata:
+      name: mrp-oidc-pod
+      labels:
+        name: mrp-oidc-pod
+        app: mrp-oidc
+    spec:
+      containers:
+      - name: mrp-health-oidc-1
+        image: mrp-health-oidc
+        imagePullPolicy: Never
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        ports:
+        - containerPort: 80
