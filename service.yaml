@@ -11,6 +11,6 @@ spec:
     name: mrp-oidc-pod
     app: mrp-oidc
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 80        # Porta exposta
+    targetPort: 8080 # Porta do contêiner
     nodePort: 30002

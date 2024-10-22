@@ -1,30 +1,22 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: keycloak-resources-job
+  name: keycloak-import-job
+  labels:
+    app: mrp-oidc
 spec:
   template:
     spec:
       containers:
-        - name: keycloak
-          image: quay.io/keycloak/keycloak:18.0.0
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              /opt/keycloak/bin/kcadm.sh config credentials \
-                --server http://keycloak-service:8080/ \
-                --realm master \
-                --user admin \
-                --password MRP_Project_v1.0
-
-              /opt/keycloak/bin/kcadm.sh create realms -f /config/realm.json
-              /opt/keycloak/bin/kcadm.sh create clients -r mrp_realm -f /config/client.json
-              /opt/keycloak/bin/kcadm.sh create users -r mrp_realm -f /config/user.json
-          volumeMounts:
-            - name: config-volume
-              mountPath: /config
+      - name: keycloak-import
+        image: 192.168.12.16:7005/agv-automated-guided-vehicles/agv-keycloak:latest
+        command: ["kc.sh", "import", "--file=/opt/keycloak/data/import/realm.json"]
+        volumeMounts:
+        - name: keycloak-resources
+          mountPath: /opt/keycloak/data/import
       restartPolicy: Never
       volumes:
-        - name: config-volume
-          configMap:
-            name: keycloak-resources
+      - name: keycloak-resources
+        configMap:
+          name: keycloak-resources-cm
+  backoffLimit: 4

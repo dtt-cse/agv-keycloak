@@ -22,9 +22,13 @@ spec:
       - name: mrp-health-oidc-1
         image: 192.168.12.16:7005/agv-automated-guided-vehicles/agv-keycloak:latest
         imagePullPolicy: Always
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        command: ["kc.sh", "start"]   # Comando para iniciar o Keycloak corretamente
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+        volumeMounts:
+        - name: keycloak-resources
+          mountPath: /opt/keycloak/data/import
+      volumes:
+      - name: keycloak-resources
+        configMap:
+          name: keycloak-resources-cm

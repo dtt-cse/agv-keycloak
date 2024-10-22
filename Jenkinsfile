@@ -47,10 +47,10 @@ pipeline {
                         kubectl delete -f deployment.yaml -n ${env.ENV} --context=minikube --ignore-not-found
                         kubectl delete -f service.yaml -n ${env.ENV} --context=minikube --ignore-not-found
                         
-                        kubectl create -f configmap.yaml -n ${env.ENV} --context=minikube
-                        kubectl apply -f job.yaml -n ${env.ENV} --context=minikube
+                        kubectl apply -f configmap.yaml -n ${env.ENV} --context=minikube
                         kubectl apply -f deployment.yaml -n ${env.ENV} --context=minikube
                         kubectl apply -f service.yaml -n ${env.ENV} --context=minikube
+                        kubectl apply -f job.yaml -n ${env.ENV} --context=minikube
                     """
                 }
             }
@@ -65,6 +65,18 @@ pipeline {
                         fi
                     """
                 }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                sh """
+                    kubectl get configmap -n ${env.ENV} --context=minikube
+                    kubectl get deployments -n ${env.ENV} --context=minikube
+                    kubectl get pods -n ${env.ENV} --context=minikube
+                    kubectl get svc -n ${env.ENV} --context=minikube
+                """
             }
         }
     }
