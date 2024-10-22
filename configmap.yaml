@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-resources-cm
+data:
+  realm.json: |
+    {
+    "id": "mrp_realm",
+    "realm": "mrp_realm",
+    "displayName": "MRP Realm"
+    }
+  client.json: |
+    {
+      "clientId": "mrp_backend",
+      "protocol": "openid-connect",
+      "secret": "o66lMZCcE7AdbVr2x2oy5iiFYOVwIQSy",
+      "directAccessGrantsEnabled": true,
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "rootUrl": "http://localhost:8080/*"
+    }
+  user.json: |
+    {
+      "enabled": true,
+      "username": "admin",
+      "credentials": [{
+        "type": "password",
+        "value": "password1234",
+        "temporary": false
+      }],
+      "realmRoles": ["admin"],
+      "clientRoles": {
+        "mrp_backend": ["user"]
+      }
+    }

@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: keycloak-resources-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:18.0.0
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              /opt/keycloak/bin/kcadm.sh config credentials \
+                --server http://keycloak-service:8080/ \
+                --realm master \
+                --user admin \
+                --password MRP_Project_v1.0
+
+              /opt/keycloak/bin/kcadm.sh create realms -f /config/realm.json
+              /opt/keycloak/bin/kcadm.sh create clients -r mrp_realm -f /config/client.json
+              /opt/keycloak/bin/kcadm.sh create users -r mrp_realm -f /config/user.json
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+      restartPolicy: Never
+      volumes:
+        - name: config-volume
+          configMap:
+            name: keycloak-resources
