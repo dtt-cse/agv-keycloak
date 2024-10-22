@@ -29,7 +29,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: '68bcf519-10e7-4080-a3c7-d2165a00477f', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh """
                             sudo podman login --tls-verify=false -u ${USERNAME} -p ${PASSWORD} 192.168.12.16:7005
-                            sudo podman build --rm --no-cache -t ${env.PROJECT} .
+                            sudo podman build --no-cache -t ${env.PROJECT} .
                             sudo podman push --tls-verify=false ${env.PROJECT} 192.168.12.16:7005/agv-automated-guided-vehicles/${env.PROJECT}
                             sudo podman rmi ${env.PROJECT}
                         """
