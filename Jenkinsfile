@@ -42,10 +42,10 @@ pipeline {
             steps {
                 script {
                     sh """
-                        kubectl delete -f configmap.yaml -n tst --context=minikube
-                        kubectl delete -f job.yaml -n tst --context=minikube
-                        kubectl delete -f deployment.yaml -n tst --context=minikube
-                        kubectl delete -f service.yaml -n tst --context=minikube
+                        kubectl delete -f configmap.yaml -n tst --context=minikube --ignore-not-found
+                        kubectl delete -f job.yaml -n tst --context=minikube --ignore-not-found
+                        kubectl delete -f deployment.yaml -n tst --context=minikube --ignore-not-found
+                        kubectl delete -f service.yaml -n tst --context=minikube --ignore-not-found
                         
                         kubectl apply -f configmap.yaml -n tst --context=minikube
                         kubectl apply -f job.yaml -n tst --context=minikube
