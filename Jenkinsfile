@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT = 'agv-alr'
+        PROJECT = 'agv-keycloak'
     }
 
     parameters {

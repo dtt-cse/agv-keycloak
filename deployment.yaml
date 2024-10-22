@@ -20,8 +20,8 @@ spec:
     spec:
       containers:
       - name: mrp-health-oidc-1
-        image: mrp-health-oidc
-        imagePullPolicy: Never
+        image: 192.168.12.16:7005/agv-automated-guided-vehicles/agv-keycloak:latest
+        imagePullPolicy: Always
         # resources:
         #   limits:
         #     memory: "128Mi"
