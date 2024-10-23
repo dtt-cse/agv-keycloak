@@ -71,12 +71,33 @@ pipeline {
     post {
         always {
             script {
-                sh """
-                    kubectl get configmap -n ${env.ENV} --context=minikube
-                    kubectl get deployments -n ${env.ENV} --context=minikube
-                    kubectl get pods -n ${env.ENV} --context=minikube
-                    kubectl get svc -n ${env.ENV} --context=minikube
-                """
+            sh """
+                echo 'Waiting for deployment to be ready...'
+                kubectl rollout status deployment/${env.PROJECT} -n ${env.ENV} --context=minikube --timeout=600s
+            """
+
+            sh """
+                echo 'Waiting for all pods to be ready...'
+                kubectl wait --for=condition=Ready pod -l app=${env.PROJECT} -n ${env.ENV} --context=minikube --timeout=600s
+            """
+
+            sh """
+                echo 'Waiting for services to be available...'
+                kubectl get svc -n ${env.ENV} --context=minikube
+            """
+
+            sh """
+                echo 'Checking configmap status...'
+                kubectl get configmap -n ${env.ENV} --context=minikube
+            """
+
+            sh """
+                echo 'Displaying final resource status...'
+                kubectl get deployments -n ${env.ENV} --context=minikube
+                kubectl get pods -n ${env.ENV} --context=minikube
+                kubectl get svc -n ${env.ENV} --context=minikube
+                kubectl get configmap -n ${env.ENV} --context=minikube
+            """
             }
         }
     }
