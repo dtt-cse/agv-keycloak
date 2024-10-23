@@ -11,7 +11,7 @@ pipeline {
         choice(name: 'ENV', choices: ['tst'], description: 'Select the deployment environment')
         booleanParam(name: 'BUILD', defaultValue: false, description: 'Select this stage to build an image')
         booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Select this stage to deploy into minikube cluster')
-        booleanParam(name: 'KEYCLOAK', defaultValue: false, description: 'Select this stage to expose keycloak')
+        booleanParam(name: 'EXPOSE_KEYCLOAK', defaultValue: false, description: 'Select this stage to expose keycloak')
     }
     
     stages {
@@ -56,7 +56,7 @@ pipeline {
             }
         }
         stage('Exposing Keycloak') {
-            when { expression { return params.KEYCLOAK } }
+            when { expression { return params.EXPOSE_KEYCLOAK } }
             steps {
                 script {
                     sh """
@@ -73,22 +73,12 @@ pipeline {
             script {
             sh """
                 echo 'Waiting for deployment to be ready...'
-                kubectl rollout status deployment/${env.PROJECT} -n ${env.ENV} --context=minikube --timeout=600s
+                kubectl rollout status deployment/mrp-oidc-deploy -n ${env.ENV} --context=minikube --timeout=600s
             """
 
             sh """
                 echo 'Waiting for all pods to be ready...'
-                kubectl wait --for=condition=Ready pod -l app=${env.PROJECT} -n ${env.ENV} --context=minikube --timeout=600s
-            """
-
-            sh """
-                echo 'Waiting for services to be available...'
-                kubectl get svc -n ${env.ENV} --context=minikube
-            """
-
-            sh """
-                echo 'Checking configmap status...'
-                kubectl get configmap -n ${env.ENV} --context=minikube
+                kubectl wait --for=condition=Ready pod -l app=mrp-oidc -n ${env.ENV} --context=minikube --timeout=600s
             """
 
             sh """
