@@ -68,27 +68,4 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            script {
-            sh """
-                echo 'Waiting for deployment to be ready...'
-                kubectl rollout status deployment/mrp-oidc-deploy -n ${env.ENV} --context=minikube --timeout=600s
-            """
-
-            sh """
-                echo 'Waiting for all pods to be ready...'
-                kubectl wait --for=condition=Ready pod -l app=mrp-oidc -n ${env.ENV} --context=minikube --timeout=600s
-            """
-
-            sh """
-                echo 'Displaying final resource status...'
-                kubectl get deployments -n ${env.ENV} --context=minikube
-                kubectl get pods -n ${env.ENV} --context=minikube
-                kubectl get svc -n ${env.ENV} --context=minikube
-                kubectl get configmap -n ${env.ENV} --context=minikube
-            """
-            }
-        }
-    }
 }
